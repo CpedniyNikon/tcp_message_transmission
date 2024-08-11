@@ -1,21 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/get_navigation.dart';
-import 'package:flutter_chat/routes/routes.dart';
+import 'package:go_router/go_router.dart';
 
-class MainPage extends StatefulWidget {
+class MainPage extends StatelessWidget {
   const MainPage({super.key});
-
-  @override
-  State<MainPage> createState() => _MainPageState();
-}
-
-class _MainPageState extends State<MainPage> {
-  @override
-  void initState() {
-    debugPrint("main");
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,22 +12,18 @@ class _MainPageState extends State<MainPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: () => {
-                Get.toNamed(Routes.server),
-              },
+              onPressed: () => {context.go('/server')},
               style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18.0),
                           side: const BorderSide(color: Colors.red)))),
               child: const Text("Режим сервера"),
             ),
             ElevatedButton(
-              onPressed: () => {
-                Get.toNamed(Routes.client),
-              },
+              onPressed: () => {context.go('/client')},
               style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18.0),
                           side: const BorderSide(color: Colors.red)))),

@@ -1,8 +1,9 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 
 typedef Unit8ListCallback = Function(Uint8List data);
 typedef DynamicCallback = Function(dynamic data);
@@ -15,13 +16,24 @@ class ClientModel {
   Unit8ListCallback onData;
   DynamicCallback onError;
 
-  ClientModel(this.hostName, this.port, this.onData, this.onError);
-
   bool isConnected = false;
-
   Socket? socket;
 
-  Future<void> connect() async {
+  ClientModel(this.hostName, this.port, this.onData, this.onError);
+
+  static Future<ClientModel?> connect(String hostName, int port,
+      Unit8ListCallback onData, DynamicCallback onError) async {
+    final model = ClientModel(hostName, port, onData, onError);
+    try {
+      await model._connect();
+      return model;
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
+  }
+
+  Future<void> _connect() async {
     try {
       socket = await Socket.connect(hostName, port);
       socket!.listen(
@@ -36,6 +48,7 @@ class ClientModel {
       isConnected = true;
     } catch (e) {
       debugPrint(e.toString());
+      rethrow;
     }
   }
 
