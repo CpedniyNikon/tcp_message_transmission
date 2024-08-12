@@ -9,6 +9,14 @@ part of 'client_state.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$ClientState on _ClientStateBase, Store {
+  Computed<bool>? _$isConnectedComputed;
+
+  @override
+  bool get isConnected =>
+      (_$isConnectedComputed ??= Computed<bool>(() => super.isConnected,
+              name: '_ClientStateBase.isConnected'))
+          .value;
+
   late final _$clientModelAtom =
       Atom(name: '_ClientStateBase.clientModel', context: context);
 
@@ -47,6 +55,14 @@ mixin _$ClientState on _ClientStateBase, Store {
   @override
   Future<void> connect(String address) {
     return _$connectAsyncAction.run(() => super.connect(address));
+  }
+
+  late final _$disconnectAsyncAction =
+      AsyncAction('_ClientStateBase.disconnect', context: context);
+
+  @override
+  Future<void> disconnect() {
+    return _$disconnectAsyncAction.run(() => super.disconnect());
   }
 
   late final _$_ClientStateBaseActionController =
@@ -89,7 +105,8 @@ mixin _$ClientState on _ClientStateBase, Store {
   String toString() {
     return '''
 clientModel: ${clientModel},
-messageHistory: ${messageHistory}
+messageHistory: ${messageHistory},
+isConnected: ${isConnected}
     ''';
   }
 }

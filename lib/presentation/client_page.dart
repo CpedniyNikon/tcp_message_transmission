@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_chat/presentation/states/client_state.dart';
 import 'package:get_it/get_it.dart';
@@ -49,33 +47,49 @@ class _ClientPageState extends State<ClientPage> {
             height: 10,
           ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              Row(
+                children: [
+                  ElevatedButton(
+                    onPressed: () => {
+                      debugPrint("connecting"),
+                      controller.connect(addressController.text),
+                    },
+                    style: ButtonStyle(
+                        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
+                                side: const BorderSide(color: Colors.red)))),
+                    child: const Text("Подключиться"),
+                  ),
+                  Container(
+                    width: 20,
+                    height: 20,
+                    color: controller.isConnected != false
+                        ? Colors.green
+                        : Colors.red,
+                  )
+                ],
+              ),
               ElevatedButton(
                 onPressed: () => {
-                  debugPrint("connecting"),
-                  controller.connect(addressController.text),
-                  setState(() {}),
+                  debugPrint("disconnecting"),
+                  controller.disconnect(),
                 },
                 style: ButtonStyle(
                     shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(18.0),
                             side: const BorderSide(color: Colors.red)))),
-                child: const Text("Подключиться"),
+                child: const Text("Отключиться"),
               ),
-              Container(
-                width: 20,
-                height: 20,
-                color: controller.clientModel.value != null
-                    ? Colors.green
-                    : Colors.red,
-              )
             ],
           ),
           const SizedBox(
             height: 10,
           ),
-          controller.clientModel.value != null
+          controller.isConnected ==true
               ? Expanded(
                   child: Column(
                     children: [

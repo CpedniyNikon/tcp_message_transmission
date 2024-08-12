@@ -25,7 +25,6 @@ abstract class _ServerStateBase with Store {
   }
 
   _ServerStateBase() {
-    debugPrint("server started");
     server = Server(onData, onError);
     startServer();
   }
@@ -33,7 +32,7 @@ abstract class _ServerStateBase with Store {
   @action
   void onData(Uint8List data) {
     final receivedData = String.fromCharCodes(data);
-    messageHistory.add("Message from client: $receivedData");
+    messageHistory.add(receivedData);
   }
 
   @action

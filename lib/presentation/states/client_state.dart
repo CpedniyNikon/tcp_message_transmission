@@ -18,8 +18,21 @@ abstract class _ClientStateBase with Store {
 
   @action
   Future<void> connect(String address) async {
-    clientModel =
-        ObservableFuture(ClientModel.connect(address, port, onData, onError));
+    if (clientModel.value == null) {
+      clientModel =
+          ObservableFuture(ClientModel.connect(address, port, onData, onError));
+    } else if (clientModel.value!.isConnected.value == false) {
+      clientModel.value!.reconnect();
+    }
+  }
+
+  @computed
+  bool get isConnected => clientModel.value?.isConnected.value == true;
+
+  @action
+  Future<void> disconnect() async {
+    await clientModel.value!.disconnect();
+    messageHistory.clear();
   }
 
   @action

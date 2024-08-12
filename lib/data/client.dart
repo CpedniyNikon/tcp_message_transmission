@@ -3,21 +3,22 @@ import 'dart:typed_data';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 
 typedef Unit8ListCallback = Function(Uint8List data);
 typedef DynamicCallback = Function(dynamic data);
 
 final deviceInfo = DeviceInfoPlugin();
 
+@immutable
 class ClientModel {
-  String hostName;
-  int port;
-  Unit8ListCallback onData;
-  DynamicCallback onError;
+  final String hostName;
+  final int port;
+  final Unit8ListCallback onData;
+  final DynamicCallback onError;
 
-  bool isConnected = false;
-  Socket? socket;
+  final Observable<bool> isConnected = Observable(false);
+  final Observable<Socket?> socket = Observable(null);
 
   ClientModel(this.hostName, this.port, this.onData, this.onError);
 
@@ -35,33 +36,40 @@ class ClientModel {
 
   Future<void> _connect() async {
     try {
-      socket = await Socket.connect(hostName, port);
-      socket!.listen(
+      socket.value = await Socket.connect(hostName, port);
+
+      socket.value!.listen(
         onData,
         onError: onError,
         onDone: () async {
-          final info = await deviceInfo.androidInfo;
-          disconnect(info);
-          isConnected = false;
+          isConnected.value = false;
         },
       );
-      isConnected = true;
+
+      isConnected.value = true;
     } catch (e) {
       debugPrint(e.toString());
       rethrow;
     }
   }
 
+  void reconnect() => _connect();
+
   void write(String message) {
-    socket!.write(message);
+    socket.value!.write(message);
   }
 
-  void disconnect(AndroidDeviceInfo androidDeviceInfo) {
+  Future<void> disconnect() async {
+    if (socket.value == null) return;
+    final androidDeviceInfo = await deviceInfo.androidInfo;
     final message =
         "${androidDeviceInfo.brand} ${androidDeviceInfo.device} is disconnected";
     write(message);
-    if (socket != null) {
-      socket!.destroy();
-    }
+    destroy();
+  }
+
+  void destroy() {
+    socket.value!.destroy();
+    socket.value = null;
   }
 }

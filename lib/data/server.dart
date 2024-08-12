@@ -11,6 +11,7 @@ typedef DynamicCallback = Function(dynamic data);
 class Server {
   Unit8ListCallback? onData;
   DynamicCallback? onError;
+
   Server(this.onData, this.onError);
 
   ServerSocket? serverSocket;
@@ -35,7 +36,9 @@ class Server {
     if (!sockets.contains(socket)) {
       sockets.add(socket);
     }
-    socket.listen((event) {onData!(event);});
+    socket.listen((event) {
+      onData!(event);
+    });
   }
 
   Future<void> close() async {
@@ -44,9 +47,9 @@ class Server {
     running = false;
   }
 
-  void broadcast(String data) {
-    onData!(Uint8List.fromList("Message from server: $data".codeUnits));
-    for(final socket in sockets) {
+  Future<void> broadcast(String data) async {
+    onData!(Uint8List.fromList(data.codeUnits));
+    for (final socket in sockets) {
       socket.write(data);
     }
   }

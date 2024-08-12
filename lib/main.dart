@@ -3,7 +3,6 @@ import 'package:flutter_chat/application/application.dart';
 import 'package:flutter_chat/application/dependencies/set_up.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
   setup();
   runApp(const Application());
 }
