@@ -21,13 +21,13 @@ mixin _$ClientState on _ClientStateBase, Store {
       Atom(name: '_ClientStateBase.clientModel', context: context);
 
   @override
-  ObservableFuture<ClientModel?> get clientModel {
+  ObservableFuture<Client?> get clientModel {
     _$clientModelAtom.reportRead();
     return super.clientModel;
   }
 
   @override
-  set clientModel(ObservableFuture<ClientModel?> value) {
+  set clientModel(ObservableFuture<Client?> value) {
     _$clientModelAtom.reportWrite(value, super.clientModel, () {
       super.clientModel = value;
     });

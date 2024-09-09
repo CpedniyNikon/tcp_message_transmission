@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_chat/data/server.dart';
+import 'package:flutter_chat/data/wrapper/model/server.dart';
 import 'package:mobx/mobx.dart';
 part 'server_state.g.dart';
 

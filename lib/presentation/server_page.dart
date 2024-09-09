@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chat/presentation/states/server_state.dart';
+import 'package:flutter_chat/domain/state/server/server_state.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 
@@ -33,8 +33,8 @@ class _ServerPageState extends State<ServerPage> {
                   ),
                 ),
               ),
-              Text(controller.server!.running == true
-                  ? controller.server!.address!
+              Text(controller.server!.running.value == true
+                  ? controller.server!.address.value!
                   : "0.0.0.0"),
               const Divider(
                 color: Colors.black,

@@ -11,7 +11,7 @@ typedef DynamicCallback = Function(dynamic data);
 final deviceInfo = DeviceInfoPlugin();
 
 @immutable
-class ClientModel {
+class Client {
   final String hostName;
   final int port;
   final Unit8ListCallback onData;
@@ -20,11 +20,11 @@ class ClientModel {
   final Observable<bool> isConnected = Observable(false);
   final Observable<Socket?> socket = Observable(null);
 
-  ClientModel(this.hostName, this.port, this.onData, this.onError);
+  Client(this.hostName, this.port, this.onData, this.onError);
 
-  static Future<ClientModel?> connect(String hostName, int port,
+  static Future<Client?> connect(String hostName, int port,
       Unit8ListCallback onData, DynamicCallback onError) async {
-    final model = ClientModel(hostName, port, onData, onError);
+    final model = Client(hostName, port, onData, onError);
     try {
       await model._connect();
       return model;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_chat/data/client.dart';
+import 'package:flutter_chat/data/wrapper/model/client.dart';
 import 'package:mobx/mobx.dart';
 
 part 'client_state.g.dart';
@@ -9,7 +9,7 @@ class ClientState = _ClientStateBase with _$ClientState;
 
 abstract class _ClientStateBase with Store {
   @observable
-  ObservableFuture<ClientModel?> clientModel = ObservableFuture.value(null);
+  ObservableFuture<Client?> clientModel = ObservableFuture.value(null);
 
   @observable
   ObservableList<String> messageHistory = ObservableList<String>();
@@ -20,7 +20,7 @@ abstract class _ClientStateBase with Store {
   Future<void> connect(String address) async {
     if (clientModel.value == null) {
       clientModel =
-          ObservableFuture(ClientModel.connect(address, port, onData, onError));
+          ObservableFuture(Client.connect(address, port, onData, onError));
     } else if (clientModel.value!.isConnected.value == false) {
       clientModel.value!.reconnect();
     }

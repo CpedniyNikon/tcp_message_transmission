@@ -3,30 +3,32 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
+import 'package:mobx/mobx.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 
 typedef Unit8ListCallback = Function(Uint8List data);
 typedef DynamicCallback = Function(dynamic data);
 
+@immutable
 class Server {
-  Unit8ListCallback? onData;
-  DynamicCallback? onError;
+  final Unit8ListCallback? onData;
+  final DynamicCallback? onError;
 
   Server(this.onData, this.onError);
 
-  ServerSocket? serverSocket;
+  final Observable<ServerSocket?> serverSocket = Observable(null);
 
-  bool running = false;
-  List<Socket> sockets = [];
-  String? address;
+  final Observable<bool> running = Observable(false);
+  final ObservableList<Socket> sockets = ObservableList();
+  final Observable<String?> address = Observable(null);
 
   Future<void> start() async {
     debugPrint("server started");
-    address = await NetworkInfo().getWifiIP();
+    address.value = await NetworkInfo().getWifiIP();
     runZoned(() async {
-      serverSocket = await ServerSocket.bind(address, 8080);
-      running = true;
-      serverSocket!.listen(onRequest);
+      serverSocket.value = await ServerSocket.bind(address.value, 8080);
+      running.value = true;
+      serverSocket.value!.listen(onRequest);
       const message = "Server is listening in port 8080";
       onData!(Uint8List.fromList(message.codeUnits));
     });
@@ -42,9 +44,9 @@ class Server {
   }
 
   Future<void> close() async {
-    await serverSocket!.close();
-    serverSocket = null;
-    running = false;
+    await serverSocket.value!.close();
+    serverSocket.value = null;
+    running.value = false;
   }
 
   Future<void> broadcast(String data) async {
